@@ -22,6 +22,21 @@ router.get('/beer', function(req, res, next) {
   }
 });
 
+/* GET bar search. */
+router.get('/bar', function(req, res, next) {
+  if (req.query.search) {
+    searchTapfinder(req.query.search, function(response) {
+      loadBars(response, function(results) {
+        res.send({ bars: results });
+      });
+    });
+  }
+  else {
+    res.status(400)
+    res.send({ error: 'You must provide a search term in the "search" query parameter' });
+  }
+});
+
 module.exports = router;
 
 function searchTapfinder(searchTerm, callback) {
@@ -66,8 +81,36 @@ function loadBeer(beer) {
             }),
           };
 
-      console.log(beerAsJson);
       callback(null, beerAsJson);
+    });
+  }
+}
+
+function loadBars(searchResults, callback) {
+  var tasks = _.map(searchResults.bars, loadBar);
+  async.parallel(tasks, function(err, results) {
+    callback(results);
+  });
+}
+
+function loadBar(bar) {
+  return function(callback) {
+    superagent.get(tapfinderBaseUrl + bar.link).end(function(error, response) {
+      var $ = cheerio.load(response.text),
+          barAsJson = {
+            name: $('#bar-detail .tap-list .tap-list-name').text(),
+            updated_at: $('#bar-detail .tap-list .bar-data .red').text().replace(/Updated:\s+/,''),
+            beers: _.map($('#bar-detail .tap-list .grid-list .panel'), function(beer) {
+              $beer = $(beer);
+              return {
+                style: $beer.find('.beer-meta h5:first-child').text().replace(/Style:\s+/,''),
+                origin: $beer.find('.beer-meta h5:nth-child(2)').text().replace(/Origin:\s+/,''),
+                name: $beer.find('h4 a[href^="/beer"]').text()
+              }
+            })
+          };
+
+      callback(null, barAsJson);
     });
   }
 }

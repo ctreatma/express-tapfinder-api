@@ -46,9 +46,27 @@ function loadBeer(beer) {
           beerAsJson = {
             name: $('#tap-detail .tap-list .tap-list-name').text(),
             origin: $('#tap-detail .tap-list .origin > strong').text(),
-            style: $('#tap-detail .tap-list .origin strong:first-child').text()
+            style: $('#tap-detail .tap-list .origin strong:first-child').text(),
+            bars: _.map($('#tap-detail .tap-list .grid-list:nth-of-type(1)').not('.events-panel').find('.panel'), function(bar) {
+              var $bar = $(bar);
+              return {
+                name: $bar.find('h4 a[href^="/bar"]').text(),
+                address: $bar.find('li:nth-child(2) p').text(),
+                updated_at: $bar.find('.updated').text().replace(/Last Updated:\s+/,'')
+              };
+            }),
+            events: _.map($('#tap-detail .tap-list .grid-list .events-panel'), function(event) {
+              var $event = $(event);
+              return {
+                name: $event.find('h4 a[href^="/event"]').text(),
+                bar: $event.find('h4 a[href^="/bar"]').text(),
+                date: $event.find('li:nth-child(3) p').text(),
+                address: $event.find('li:nth-child(4) p').text()
+              };
+            }),
           };
 
+      console.log(beerAsJson);
       callback(null, beerAsJson);
     });
   }

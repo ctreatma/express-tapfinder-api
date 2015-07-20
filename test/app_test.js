@@ -16,7 +16,13 @@ describe('GET /beer', function() {
         beers: [{
           name: 'Russian River Consecration',
           origin: 'Santa Rosa, CA',
-          style: 'Sour/Wild-Fermented Ale'
+          style: 'Sour/Wild-Fermented Ale',
+          bars: [{
+            name: 'Tria Taproom',
+            address: '2005 Walnut Street',
+            updated_at: '07/20/15'
+          }],
+          events: []
         }]
       }, done);
     });

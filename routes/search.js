@@ -7,6 +7,9 @@ var router = express.Router();
 
 var tapfinderBaseUrl = 'http://www.phillytapfinder.com';
 
+/* GET combined search (beer & bars). */
+router.get('/', validateSearchText, searchForBars, searchForBeers, sendResults);
+
 /* GET beer search. */
 router.get('/beers', validateSearchText, searchForBeers, sendResults);
 

@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- '0.11'
+- '0.10'
+deploy:
+  provider: heroku
+  api_key:
+    secure: XEHmDh2TtqlE0MkB80mHxtbmFBnozF+fKyFtv2McCFkWUXuY8PzOaXc8Ht7vww2csQ+WzLVX3424MdEw/71lRhy0Vw1fxGgubce5MmcSh7WPN3bp/HEfiQY/WomA6lj8YoPoweflwIdqOzAXXiAT6po18G0Fi9K6OXU6cl7CLoJmvCAWlPp25ib+AZrpAo17U9btlv5Xp39HGaA5RpDcSXe4n3YTn3F9+xi9EzCWGkZF2zZcmS1T9vTiMLONceLqwwTBCHjpQQ+tpgc5Zv05GcLy2DaRjmGlgnVd9o/gVu4v5W/v9RpJV4mrIne5pLVBkx+x4GjZIIa3a0ngo2ryFqbhtd36zE9tUDujuYcU/1CRLPAMwL6nJy15HTj+TvhOAlxcgELe3bKXY91vZ0S4EElBSBBRUTskJmp4reyY4xkJJiYS5INaCktzyEIvaquGwZ/LFHm6nEr2tv5Q8Bk/fU/Zw/WQzbbkFGtmsrXEoJ9tTJAv+gV4TD94kJ6C+qm5XbWAo0UfMbUyvW0hYqTDoODXRWAGyO8Nr2ei/4m8GVcJbILt30xTzNRP7iQfFJLesjj+dRRcFRGDoOHGCgngwH4wBhuXkxRjOvTj0N3ayJdWIWb4MSbpWCB+q+X4a6YabQ3af04Gntzzjox2oKKBZKuwM6RFk62Fu4xErly+w1k=
+  app: tapfinder-api
+  on:
+    repo: ctreatma/express-tapfinder-api

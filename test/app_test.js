@@ -1,18 +1,16 @@
 var request = require('supertest'),
-    express = require('express');
+    express = require('express'),
+    nock = require('nock');
 
 var app = require('../app.js');
 
 describe('GET /beer', function() {
-  this.timeout(4000);
 
   describe('when search text is provided', function() {
-    it('responds with a success status', function(done) {
-      request(app).get('/beer?search=consecration').expect(200, done);
-    });
 
     it('returns the tapfinder results in the "beers" element', function(done) {
-      request(app).get('/beer?search=consecration').expect({
+      nock.load(__dirname + '/../fixtures/consecration.json');
+      request(app).get('/beer?search=consecration').expect(200).expect({
         beers: [{
           name: 'Russian River Consecration',
           origin: 'Santa Rosa, CA',
@@ -36,15 +34,11 @@ describe('GET /beer', function() {
 });
 
 describe('GET /bar', function() {
-  this.timeout(4000);
 
   describe('when search text is provided', function() {
-    it('responds with a success status', function(done) {
-      request(app).get('/bar?search=wrap%20shack').expect(200, done);
-    });
-
     it('returns the tapfinder results in the "bars" element', function(done) {
-      request(app).get('/bar?search=wrap%20shack').expect({
+      nock.load(__dirname + '/../fixtures/wrap_shack.json')
+      request(app).get('/bar?search=wrap%20shack').expect(200).expect({
         bars: [{
           name: 'Wrap Shack',
           updated_at: '07/18/2015',

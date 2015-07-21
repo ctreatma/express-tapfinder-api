@@ -4,13 +4,13 @@ var request = require('supertest'),
 
 var app = require('../app.js');
 
-describe('GET /beer', function() {
+describe('GET /search/beers', function() {
 
   describe('when search text is provided', function() {
 
     it('returns the tapfinder results in the "beers" element', function(done) {
       nock.load(__dirname + '/../fixtures/consecration.json');
-      request(app).get('/beer?search=consecration').expect(200).expect({
+      request(app).get('/search/beers?text=consecration').expect(200).expect({
         beers: [{
           name: 'Russian River Consecration',
           origin: 'Santa Rosa, CA',
@@ -28,17 +28,17 @@ describe('GET /beer', function() {
 
   describe('when no search text is provided', function() {
     it('responds with a bad request status', function(done) {
-      request(app).get('/beer').expect(400, done);
+      request(app).get('/search/beers').expect(400, done);
     });
   });
 });
 
-describe('GET /bar', function() {
+describe('GET /search/bars', function() {
 
   describe('when search text is provided', function() {
     it('returns the tapfinder results in the "bars" element', function(done) {
       nock.load(__dirname + '/../fixtures/wrap_shack.json')
-      request(app).get('/bar?search=wrap%20shack').expect(200).expect({
+      request(app).get('/search/bars?text=wrap%20shack').expect(200).expect({
         bars: [{
           name: 'Wrap Shack',
           updated_at: '07/18/2015',
@@ -81,7 +81,7 @@ describe('GET /bar', function() {
 
   describe('when no search text is provided', function() {
     it('responds with a bad request status', function(done) {
-      request(app).get('/bar').expect(400, done);
+      request(app).get('/search/bars').expect(400, done);
     });
   });
 });

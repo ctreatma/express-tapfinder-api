@@ -8,9 +8,9 @@ var router = express.Router();
 var tapfinderBaseUrl = 'http://www.phillytapfinder.com';
 
 /* GET beer search. */
-router.get('/beer', function(req, res, next) {
-  if (req.query.search) {
-    searchTapfinder(req.query.search, function(response) {
+router.get('/beers', function(req, res, next) {
+  if (req.query.text) {
+    searchTapfinder(req.query.text, function(response) {
       loadBeers(response, function(results) {
         res.send({ beers: results });
       });
@@ -18,14 +18,14 @@ router.get('/beer', function(req, res, next) {
   }
   else {
     res.status(400)
-    res.send({ error: 'You must provide a search term in the "search" query parameter' });
+    res.send({ error: 'You must provide a search term in the "text" query parameter' });
   }
 });
 
 /* GET bar search. */
-router.get('/bar', function(req, res, next) {
-  if (req.query.search) {
-    searchTapfinder(req.query.search, function(response) {
+router.get('/bars', function(req, res, next) {
+  if (req.query.text) {
+    searchTapfinder(req.query.text, function(response) {
       loadBars(response, function(results) {
         res.send({ bars: results });
       });
@@ -33,7 +33,7 @@ router.get('/bar', function(req, res, next) {
   }
   else {
     res.status(400)
-    res.send({ error: 'You must provide a search term in the "search" query parameter' });
+    res.send({ error: 'You must provide a search term in the "text" query parameter' });
   }
 });
 

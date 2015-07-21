@@ -8,19 +8,25 @@ var router = express.Router();
 var tapfinderBaseUrl = 'http://www.phillytapfinder.com';
 
 /* GET combined search (beer & bars). */
-router.get('/', validateSearchText, searchForBars, searchForBeers, sendResults);
+router.get('/', searchTapfinder, loadBars, loadBeers, sendResults);
 
 /* GET beer search. */
-router.get('/beers', validateSearchText, searchForBeers, sendResults);
+router.get('/beers', searchTapfinder, loadBeers, sendResults);
 
 /* GET bar search. */
-router.get('/bars', validateSearchText, searchForBars, sendResults);
+router.get('/bars', searchTapfinder, loadBars, sendResults);
 
 module.exports = router;
 
-function validateSearchText(req, res, next) {
-  if (req.query.text) {
-    next();
+function searchTapfinder(req, res, next) {
+  var searchTerm = req.query.text;
+  if (searchTerm) {
+    superagent.post(tapfinderBaseUrl + '/wp-content/plugins/phillytapfinder/')
+      .type('form').send({ "class": 'Search', "process": 'searchAll', "searchTerm": searchTerm })
+      .end(function(error, response) {
+        res.searchResults = response.body;
+        next();
+      });
   }
   else {
     res.status(400)
@@ -28,42 +34,25 @@ function validateSearchText(req, res, next) {
   }
 }
 
-function searchForBeers(req, res, next) {
-  searchTapfinder(req.query.text, function(response) {
-    loadBeers(response, function(results) {
-      res.results = res.results || {};
-      res.results['beers'] = results;
-      next();
-    });
-  });
-}
-
-function searchForBars(req, res, next) {
-  searchTapfinder(req.query.text, function(response) {
-    loadBars(response, function(results) {
-      res.results = res.results || {};
-      res.results['bars'] = results;
-      next();
-    });
-  });
-}
-
 function sendResults(req, res, next) {
   res.json(res.results);
 }
 
-function searchTapfinder(searchTerm, callback) {
-  superagent.post(tapfinderBaseUrl + '/wp-content/plugins/phillytapfinder/')
-    .type('form').send({ "class": 'Search', "process": 'searchAll', "searchTerm": searchTerm })
-    .end(function(error, response) {
-      callback(response.body);
-    });
+function loadBeers(req, res, next) {
+  var tasks = _.map(res.searchResults.beers, loadBeer);
+  async.parallel(tasks, function(err, results) {
+    res.results = res.results || {};
+    res.results['beers'] = results;
+    next();
+  });
 }
 
-function loadBeers(searchResults, callback) {
-  var tasks = _.map(searchResults.beers, loadBeer);
+function loadBars(req, res, next) {
+  var tasks = _.map(res.searchResults.bars, loadBar);
   async.parallel(tasks, function(err, results) {
-    callback(results);
+    res.results = res.results || {};
+    res.results['bars'] = results;
+    next();
   });
 }
 
@@ -97,13 +86,6 @@ function loadBeer(beer) {
       callback(null, beerAsJson);
     });
   }
-}
-
-function loadBars(searchResults, callback) {
-  var tasks = _.map(searchResults.bars, loadBar);
-  async.parallel(tasks, function(err, results) {
-    callback(results);
-  });
 }
 
 function loadBar(bar) {

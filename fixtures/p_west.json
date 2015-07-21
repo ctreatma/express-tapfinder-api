@@ -72,30 +72,6 @@
 
 {
   "scope": "http://www.phillytapfinder.com:80",
-  "method": "post",
-  "path": "/wp-content/plugins/phillytapfinder/",
-  "body": "class=Search&process=searchAll&searchTerm=p%20west",
-  "status": 200,
-  "response": {"beers":[{"name":"Pizza Boy West Shore IPA","link":"/?p=42680","count":1}],"styles":[],"bars":[{"name":"The Pour House Westmont","link":"/?p=39119","count":0}],"hoods":[]},
-  "headers": {
-    "date": "Tue, 21 Jul 2015 19:43:42 GMT",
-  "server": "Apache/2.2.22 (Ubuntu)",
-  "x-powered-by": "PHP/5.4.6-1ubuntu1.8",
-  "vary": "Cookie",
-  "x-pingback": "http://www.phillytapfinder.com/wordpress/xmlrpc.php",
-  "expires": "Wed, 11 Jan 1984 05:00:00 GMT",
-  "cache-control": "no-cache, must-revalidate, max-age=0",
-  "pragma": "no-cache",
-  "content-type": "text/json",
-  "content-length": "174",
-  "age": "1",
-  "connection": "close",
-  "via": "1.1 localhost.localdomain"
-}
-},
-
-{
-  "scope": "http://www.phillytapfinder.com:80",
   "method": "get",
   "path": "/?p=42680",
   "status": 301,

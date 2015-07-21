@@ -8,36 +8,46 @@ var router = express.Router();
 var tapfinderBaseUrl = 'http://www.phillytapfinder.com';
 
 /* GET beer search. */
-router.get('/beers', function(req, res, next) {
-  if (req.query.text) {
-    searchTapfinder(req.query.text, function(response) {
-      loadBeers(response, function(results) {
-        res.send({ beers: results });
-      });
-    });
-  }
-  else {
-    res.status(400)
-    res.send({ error: 'You must provide a search term in the "text" query parameter' });
-  }
-});
+router.get('/beers', validateSearchText, searchForBeers, sendResults);
 
 /* GET bar search. */
-router.get('/bars', function(req, res, next) {
+router.get('/bars', validateSearchText, searchForBars, sendResults);
+
+module.exports = router;
+
+function validateSearchText(req, res, next) {
   if (req.query.text) {
-    searchTapfinder(req.query.text, function(response) {
-      loadBars(response, function(results) {
-        res.send({ bars: results });
-      });
-    });
+    next();
   }
   else {
     res.status(400)
     res.send({ error: 'You must provide a search term in the "text" query parameter' });
   }
-});
+}
 
-module.exports = router;
+function searchForBeers(req, res, next) {
+  searchTapfinder(req.query.text, function(response) {
+    loadBeers(response, function(results) {
+      res.results = res.results || {};
+      res.results['beers'] = results;
+      next();
+    });
+  });
+}
+
+function searchForBars(req, res, next) {
+  searchTapfinder(req.query.text, function(response) {
+    loadBars(response, function(results) {
+      res.results = res.results || {};
+      res.results['bars'] = results;
+      next();
+    });
+  });
+}
+
+function sendResults(req, res, next) {
+  res.json(res.results);
+}
 
 function searchTapfinder(searchTerm, callback) {
   superagent.post(tapfinderBaseUrl + '/wp-content/plugins/phillytapfinder/')
